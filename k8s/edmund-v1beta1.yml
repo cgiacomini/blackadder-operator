@@ -11,3 +11,6 @@ spec:
   pauseDuration: 30
   excludedNamespaces:
     - kube-system
+    - chaos-operator
+    - local-path-storage
+    - kube-node-lease

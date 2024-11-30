@@ -1,28 +1,22 @@
-FROM docker.io/python:3.10 AS builder
+FROM docker.io/python:3.10
 
-RUN pip install --user pipenv
+# Set working directory
+WORKDIR /usr/src/app
 
-# Tell pipenv to create venv in the current directory
-ENV PIPENV_VENV_IN_PROJECT=1
+# Create a virtual environment
+RUN python3 -m venv venv
 
-ADD Pipfile.lock Pipfile /usr/src/
+# Ensure the virtual environment's pip is up to date
+RUN ./venv/bin/pip install --upgrade pip
 
-WORKDIR /usr/src
+# Copy requirements file
+COPY requirements.txt ./
 
-RUN /root/.local/bin/pipenv sync
+# Install dependencies using the virtual environment's pip
+RUN ./venv/bin/pip install -r requirements.txt
 
-RUN /usr/src/.venv/bin/python3 -c "import pykube; print(pykube.__version__)"
+# Copy application code
+COPY controller.py ./
 
-FROM docker.io/python:3.10 AS runtime
-
-RUN mkdir -v /usr/src/venv
-
-COPY --from=builder /usr/src/.venv/ /usr/src/venv/
-
-RUN /usr/src/venv/bin/python3 -c "import pykube; print(pykube.__version__)"
-
-WORKDIR /usr/src/
-
-COPY controller.py .
-
+# Set the command to run the application
 CMD ["./venv/bin/python", "-u", "controller.py"]

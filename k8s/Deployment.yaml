@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+  labels:
+    app: blackadder
+  name: blackadder
+  namespace: chaos-operator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: blackadder
+  template:
+    metadata:
+      labels:
+        app: blackadder
+    spec:
+      containers:
+      - image: blackadder-operator:0.1
+        imagePullPolicy: IfNotPresent
+        name: blackadder

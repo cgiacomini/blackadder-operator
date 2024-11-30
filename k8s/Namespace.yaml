@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    kubernetes.io/metadata.name: chaos-operator
+  name: chaos-operator
+spec:
+  finalizers:
+  - kubernetes
