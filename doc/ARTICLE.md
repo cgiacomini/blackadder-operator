@@ -1,9 +1,21 @@
 # Kubernetes Python Operator example 
+
+# Table of Contents
+1. [Introduction](#kubernetes-python-operator-example)
+2. [Pre-Requisites](#prerequisites)
+3. [What is an Operator, and Why Write It with Python?](#what-is-an-operator-and-why-write-it-with-python)
+4. [Introducing the Operator Blackadder](#introducing-the-operator-blackadder)
+5. [Creating a CustomResourceDefinition](#creating-a-customresourcedefinition)
+6. [Adding the Controller Logic](#adding-the-controller-logic)
+7. [Testing the Controller Logic](#testing-the-controller-logic)
+8. [Creating the Docker Image and Manifests](#creating-the-docker-image-and-manifests)
+9. [Deployment and Verification](#deployment-and-verification)
+
 ## PreRequisites:
 * Docker up and running
 * A kubernets cluster up and running. I am using kind here for semplicity see [KIND](../kind/README.md)
 ## What is an Operator, and why write it with Python?
-[Ref: https://www.spectrocloud.com/blog/writing-kubernetes-operators-with-python]
+[Ref: https://www.spectrocloud.com/blog/writing-kubernetes-operators-with-python]  
 [Ref: https://github.com/spectrocloud/blackadder/blob/main/k8s/blackadder-crd.yml]
 
 Kubernetes is de facto the platform for deploying applications using Linux containers.  
@@ -131,7 +143,7 @@ $ kubectl  get crds
 NAME                        CREATED AT
 chaosagents.blackadder.io   2024-11-29T09:52:46Z
 ```
-And create one of such resource with the following YAML file
+And create one of such resource with the following YAML file  
 ***k8s/edmund.yml***
 ```
 apiVersion: blackadder.io/v1alpha1
@@ -157,7 +169,8 @@ We can add more toggles and switches and definitions to our CustomResourceDefint
 Here we define two version of the CRD: 
 * *v1alpha1* with the previous defined properties *tantrumMode* and *tantrumMode*
 * *v1beta1* whith extra properties such as *cancerMode*, *ipsumMode*, *eagerness*, *pauseDuration* and *excludedNamespaces*
-For description of the meaning of these new properties see the *additionalPrinterColumns* section of the new Custom Resource Definiation YAML file:
+For description of the meaning of these new properties see the *additionalPrinterColumns* section of the new Custom Resource Definiation YAML file:  
+
 ***blackadder-cred.yaml***
 ```
 apiVersion: apiextensions.k8s.io/v1
@@ -444,10 +457,9 @@ default              my-dep-5cc5766d5-qdxvw                            1/1     R
 default              test                                              1/1     Running   0               21s
 kube-public          test                                              1/1     Running   0               27s
 
-$ kubectl get deployment -A
+$ kubectl get deployment -n default
 NAMESPACE            NAME                     READY   UP-TO-DATE   AVAILABLE   AGE
 default              my-dep                   3/3     3            3           56s
-kube-system          coredns                  2/2     2            2           3d23h
 ```
 
 Now we can run the controller.py script and see the effects on our deployed pods and deployment.
@@ -534,7 +546,7 @@ spec:
   finalizers:
   - kubernetes
 ```
-In creating the namespace, kubernetes by default creates also a default *serviceaccount* to which we will gren later the rights
+In creating the namespace, kubernetes by default creates also a default *serviceaccount* to which we will grent later the rights
 to list, patch and delete Pod, Deployment and ConfigMap objects.
 
 ### ClusterRole YAML file - ClusterRole.yaml
