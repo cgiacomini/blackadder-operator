@@ -2,6 +2,7 @@ apiVersion: blackadder.io/v1beta1
 kind: ChaosAgent
 metadata:
   name: princeedmund1
+  namespace: chaos-operator
 spec:
   tantrumMode: true
   podTolerance: 10

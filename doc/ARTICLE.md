@@ -171,7 +171,7 @@ Here we define two version of the CRD:
 * *v1beta1* whith extra properties such as *cancerMode*, *ipsumMode*, *eagerness*, *pauseDuration* and *excludedNamespaces*
 For description of the meaning of these new properties see the *additionalPrinterColumns* section of the new Custom Resource Definiation YAML file:  
 
-***blackadder-cred.yaml***
+***blackadder-cred.yml***
 ```
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
@@ -286,7 +286,7 @@ princeedmund1   true      10          true             20          30      ["kub
 ```
 The ChaosAgent Resource have most of the propertied set to true and also is instructed to exclude kube-system, chaos-operator, local-path-storage and kube-node-lease from the namespaces to look for pods , deployments and cofigmap
 
-You can find the complete definition of the chaosagents manifests for creating agents [here](../k8s/blackadder-v1alpha1.yaml) 
+You can find the complete definition of the chaosagents manifests for creating agents [here](../k8s/blackadder-v1alpha1.yml) 
 
 ## Adding the controller logic
 We have now created a new resource that is stored in Kubernetes and served by* kube-api-server*. 
@@ -520,7 +520,7 @@ blackadder-operator                                     0.1             5bb7380c
 ```
 ### load the docker image in kubernetes registry
 We could push the docker image to a public docker hub repository so that we can then specify the image URL
-in the Deployment.yaml file we arr going to write.  
+in the Deployment.yml file we arr going to write.  
 Here for semplicity we push the image directly inside the kubernetes registry and then we tell later 
 in our Deployment YAML file to use the local image.
 
@@ -533,7 +533,7 @@ Image: "blackadder-operator:0.1" with ID "sha256:5bb7380c3f688f93bc5734975b131d3
 ```
 As we can see the image has been loaded on all nodes.
 
-### Namespace YAML file - namespace.yaml
+### Namespace YAML file - namespace.yml
 We create a dedicatede namespace *chaos-operator* where to deploy the chaos operator.  
 ```
 apiVersion: v1
@@ -549,7 +549,7 @@ spec:
 In creating the namespace, kubernetes by default creates also a default *serviceaccount* to which we will grent later the rights
 to list, patch and delete Pod, Deployment and ConfigMap objects.
 
-### ClusterRole YAML file - ClusterRole.yaml
+### ClusterRole YAML file - ClusterRole.yml
 Here we defines the Role *blackadder* with the permissions we later assign to the *default* ServiceAccount in the *cluster-role* namespace.  
 ```
 apiVersion: rbac.authorization.k8s.io/v1
@@ -570,7 +570,7 @@ rules:
      resources: ["configmaps"]
      verbs: ["get", "list", "patch"]
 ```
-### Role Binding YAML file - ClusterRoleBinding.yaml
+### Role Binding YAML file - ClusterRoleBinding.yml
 Here we bind the Role *blackadder* with the *default* ServiceAccount in the chaos-operator namespace.
 ```
 apiVersion: rbac.authorization.k8s.io/v1
@@ -586,7 +586,7 @@ subjects:
   kind: User
   name: system:serviceaccount:chaos-operator:default
 ```
-### DeploymentConfig YAML file - Deployment.yaml
+### DeploymentConfig YAML file - Deployment.yml
 Here *imagePullPolicy: Never* will not attempt to pull the image since is already present in kubernetes cluster registry.  
 Since we use the **default** service account in the namespace where the operator is running, we do not need to explicitly specify   the serviceAccountName in the operator's Deployment manifest.  
 By default, Kubernetes assigns the default service account to any Pod created in a namespace, unless another service account is specified.
