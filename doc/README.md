@@ -7,9 +7,9 @@
 4. [Introducing the Operator Blackadder](#introducing-the-operator-blackadder)
 5. [Creating a CustomResourceDefinition](#creating-a-customresourcedefinition)
 6. [Adding the Controller Logic](#adding-the-controller-logic)
-7. [Testing the Controller Logic](#testing-the-controller-logic)
-8. [Creating the Docker Image and Manifests](#creating-the-docker-image-and-manifests)
-9. [Deployment and Verification](#deployment-and-verification)
+7. [Testing The Controller Logic](#testing-the-controller-logic)
+8. [Create the Docker Image and the Manifests](#create-the-docker-image-and-manifests)
+9. [Deplyment and Verifications](#deployment-and-verification)
 
 ## PreRequisites:
 * Docker up and running
@@ -89,7 +89,7 @@ For this article, I will be using [pykube-ng](https://codeberg.org/hjacobs/pykub
 for the Kubernetes API.  
 Personally, I like using it, because it feels more pythonic than the [official Python Client for Kubernetes](https://github.com/kubernetes-client/python).
 
-## We start by creating a CustomResourceDefinition
+## Creating a CustomResourceDefinition
 ***k8s/blackadder-v1alpha1.yml***
 ```
 apiVersion: apiextensions.k8s.io/v1
@@ -441,7 +441,7 @@ For example, for a cluster with hundreds of ConfigMaps and Pods each cycle can t
         ```
 With that, the controller code is complete. You can view the complete code in [controller.py](../controller.py)
 
-## Testing The controller Logic
+## Testing The Controller Logic
 We can test the controller logic by running the python controller.py manually.   
 First let's crate a couple of Pods in the *default* namespace and a Deployment in the *kube-public* namespace with three replicas.
 ```
