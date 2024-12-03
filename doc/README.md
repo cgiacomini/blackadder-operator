@@ -626,3 +626,11 @@ princeedmund1   true      10          true             20          30      ["kub
 Basically every 30 seconds it will randomly kill pods and scale deployments in all namspaces of the cluster with  the exclusion of those in EXCLUDED property controlled by TOLLERANCE and EAGERNESS.
 
 
+Beacuse we crated a couple of pods in *kube-public* and *default* namespace which are not in the list of excluded namespaces,
+then after some runs the chaosagent will kill those two pods. Also the deployment *my-dep* will be scaled randomly
+```
+$ kubectl run --image docker.io/nginx test -n kube-public
+$ kubectl run --image docker.io/nginx test -n default
+$ kubectl create deployment my-dep --image=nginx --replicas=3 -n default
+```
+
