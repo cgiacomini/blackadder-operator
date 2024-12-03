@@ -67,7 +67,7 @@ def main():
         configmaps = api.list_objects(ConfigMap, exclude_namespaces)
 
         if agent.config.tantrumMode:
-            randomly_kill_pods(pods, agent.config.podTolerance,  agent.config.eagerness)
+            randomly_kill_pods(pods, agent.config.tolerance,  agent.config.eagerness)
 
         if agent.config.cancerMode:
             randomly_scale_deployments(deployments, agent.config.eagerness)

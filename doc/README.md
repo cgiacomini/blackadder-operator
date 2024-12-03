@@ -118,7 +118,7 @@ spec:
             properties:
               tantrumMode:
                 type: boolean
-              podTolerance:
+              tolerance:
                 type: integer
     additionalPrinterColumns:
     - name: Tantrum
@@ -128,12 +128,12 @@ spec:
     - name: Tolerance
       type: integer
       description: Total number of Pod to tolerate before randomly killing Pods
-      jsonPath: .spec.podTolerance
+      jsonPath: .spec.tolerance
 ```
 
 This will create a new Custom Resource of kind *ChaosAgent**. This new resouce has attibutes
 * ***tantrumMode***: a Boolean that is used to acivate the random kill_pod functionality.
-* ***podTolerance*** : an Intege that define the total number of Pod to tolerate before randomly killing Pods
+* ***tolerance*** : an Intege that define the total number of Pod to tolerate before randomly killing Pods
 We can now create the new Custom Resource Definition in our kubernetes cluster
 ```
 $ kubectl apply -f k8s/blackadder-v1alpha1.yml
@@ -152,7 +152,7 @@ metadata:
   name: princeedmund1
 spec:
   tantrumMode: true
-  podTolerance: 10
+  tolerance: 10
 ```
 
 We create here a ChaosAgent  Resoruce named *princeedmund1*, and as we can see it ha the two above mentioned properties. 
@@ -199,7 +199,7 @@ spec:
             properties:
               tantrumMode:
                 type: boolean
-              podTolerance:
+              tolerance:
                 type: integer
     additionalPrinterColumns:
     - name: Tantrum
@@ -209,7 +209,7 @@ spec:
     - name: Tolerance
       type: integer
       description: Total number of Pod to tolerate before randomly killing Pods
-      jsonPath: .spec.podTolerance
+      jsonPath: .spec.tolerance
   - name: v1beta1  # you can serve multiple versions e.g v1beta2 or v1alpha1
     served: true
     storage: true
@@ -222,7 +222,7 @@ spec:
             properties:
               tantrumMode:
                 type: boolean
-              podTolerance:
+              tolerance:
                 type: integer
               cancerMode:
                 type: boolean
@@ -246,7 +246,7 @@ spec:
     - name: Tolerance
       type: integer
       description: Total number of Pod to tolerate before randomly killing Pods
-      jsonPath: .spec.podTolerance
+      jsonPath: .spec.tolerance
     - name: Cancer
       type: boolean
       jsonPath: .spec.cancerMode

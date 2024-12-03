@@ -4,4 +4,4 @@ metadata:
   name: princeedmund1
 spec:
   tantrumMode: true
-  podTolerance: 10
+  tolerance: 10

@@ -16,7 +16,7 @@ COPY requirements.txt ./
 RUN ./venv/bin/pip install -r requirements.txt
 
 # Copy application code
-COPY controller.py ./
+COPY controller-ng.py ./
 
 # Set the command to run the application
-CMD ["./venv/bin/python", "-u", "controller.py"]
+CMD ["./venv/bin/python", "-u", "controller-ng.py"]

@@ -4,6 +4,7 @@ import time
 import logging
 import munch
 import pykube
+import lorem
 
 from pykube import Pod, Deployment, ConfigMap
 
@@ -86,14 +87,32 @@ class ChaosController:
             tolerance (int): The minimum number of pods to keep alive.
             eagerness (int): The percentage chance to kill each pod.
         """
-        if len(pods) < tolerance:
-            return
-        for pod in random.sample(pods, eagerness):
-            try:
-                pod.delete()
-                self.logger.info(f"Killed pod {pod.namespace}/{pod.name}")
-            except Exception as e:
-                self.logger.error(f"Error killing pod {pod.namespace}/{pod.name}: {e}")
+        try:
+            if len(pods) < tolerance:
+                self.logger.info(f"Skipping pod killing, only {len(pods)} pods found")
+                return
+            # Randomly select PODs to kill
+            pods_to_kill = []
+            for pod in pods:
+                if random.randint(1, 100) <= eagerness:
+                    pods_to_kill.append(pod)
+            
+            # Ensure we do not kill more pods than allowed by tolerance
+            if len(pods) - len(pods_to_kill) < tolerance:
+                self.logger.info(f"Skipping pod killing, would violate tolerance with {len(pods_to_kill)} pods to kill")
+                return
+            
+            # Kill selected PODs
+            self.logger.info(f"Attempting to kill {len(pods_to_kill)} pods out of {len(pods)} available pods")
+            for pod in pods_to_kill:
+                try:
+                    self.logger.info(f"Killing pod {pod.namespace}/{pod.name}")
+                    pod.delete()
+                    self.logger.info(f"Killed pod {pod.namespace}/{pod.name}")
+                except Exception as e:
+                    self.logger.error(f"Error killing pod {pod.namespace}/{pod.name}: {e}")
+        except Exception as e:
+            self.logger.error(f"Error killing pods: {e}")
 
     def randomly_scale_deployments(self, deployments, eagerness):
         """
@@ -106,13 +125,47 @@ class ChaosController:
         for deployment in deployments:
             if random.randint(0, 100) < eagerness:
                 try:
-                    new_replicas = random.randint(1, 10)
+                    current_replicas = deployment.obj['spec']['replicas']
+                    #  Scale deployment to double the current number of replicas, up to a maximum of 128
+                    if current_replicas < 128:
+                        new_replicas = min(current_replicas * 2, 128)
+                    else:
+                        new_replicas = current_replicas  # No change if already 128 or more
+
+                    # Update the deployment with the new number of replicas
                     deployment.obj['spec']['replicas'] = new_replicas
                     deployment.update()
                     self.logger.info(f"Scaled {deployment.namespace}/{deployment.name} to {new_replicas}")
                 except Exception as e:
                     self.logger.error(f"Error scaling deployment {deployment.namespace}/{deployment.name}: {e}")
 
+    def randomly_write_configmaps(self, configmaps, eagerness):
+        """
+        Randomly modifies the data in Kubernetes ConfigMaps based on a specified eagerness level.
+
+        Args:
+            configmaps (list): A list of ConfigMap objects.
+            eagerness (int): The percentage chance to modify each ConfigMap.
+        """
+        for cm in configmaps:
+            self.logger.info(f"Checking {cm.namespace}/{cm.name}")
+            
+            # Check if the ConfigMap is immutable
+            if cm.obj.get("immutable"):
+                self.logger.info(f"Skipping immutable ConfigMap {cm.namespace}/{cm.name}")
+                continue
+            
+            # Randomly decide whether to modify the ConfigMap based on eagerness
+            if random.randint(0, 100) < eagerness:
+                try:
+                    # Replace each value in the data section with Lorem Ipsum text
+                    for k, v in cm.obj["data"].items():
+                        cm.obj["data"][k] = lorem.paragraph()
+                    cm.update()
+                    self.logger.info(f"Modified ConfigMap {cm.namespace}/{cm.name} with Lorem Ipsum text")
+                except Exception as e:
+                    self.logger.error(f"Error modifying ConfigMap {cm.namespace}/{cm.name}: {e}")
+                    
     def run(self):
         """
         Runs the main loop of the ChaosController, periodically listing objects and performing chaos actions.

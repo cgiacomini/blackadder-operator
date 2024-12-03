@@ -5,7 +5,7 @@ metadata:
   namespace: chaos-operator
 spec:
   tantrumMode: true
-  podTolerance: 10
+  tolerance: 10
   cancerMode: true
   ipsumMode: true
   eagerness: 20

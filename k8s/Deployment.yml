@@ -17,6 +17,6 @@ spec:
         app: blackadder
     spec:
       containers:
-      - image: blackadder-operator:0.1
+      - image: blackadder-operator:0.2
         imagePullPolicy: Never
         name: blackadder
